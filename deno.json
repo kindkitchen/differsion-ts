@@ -1,0 +1,11 @@
+{
+    "name": "@kindkitchen/differsion-ts",
+    "version": "0.1.0",
+    "license": "MIT",
+    "exports": "./mod.ts",
+    "nodeModulesDir": "auto",
+    "unstable": ["fmt-component", "fmt-sql"],
+    "fmt": {
+        "indentWidth": 4
+    }
+}
