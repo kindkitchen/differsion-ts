@@ -1,9 +1,11 @@
 export function json_to_path_value_dict<T>(
     jsonValue: T,
-    path_separator = "  =>  ",
+    path_separator = "/",
+    hash_separator_between_paths = "",
 ) {
     try {
-        const _jsonValue = JSON.stringify(jsonValue);
+        /// Check that this is valid json, avoid undefined and another js-only though safe things
+        const _jsonValue = JSON.parse(JSON.stringify(jsonValue));
 
         /// The type of the input value
         let type = "Json::OBJECT" as
@@ -101,7 +103,7 @@ export function json_to_path_value_dict<T>(
             type,
             value: _jsonValue,
             dict,
-            hash: Object.keys(dict).sort().join(""),
+            hash: Object.keys(dict).sort().join(hash_separator_between_paths),
         };
     } catch {
         throw new Error(`ERROR: not JSON serializable input!`);
