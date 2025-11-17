@@ -1,7 +1,8 @@
-import { MetaJSON } from "./unknown_json_to_meta_json.ts";
+import { is_unknown_json_but_not_js } from "./is_unknown_json_but_not_js.ts";
+import { unknown_json_to_meta_json } from "./unknown_json_to_meta_json.ts";
 import { expect } from "@std/expect";
 
-Deno.test(`Testing ${MetaJSON.is_unknown_json_but_not_js.name} function`, async (t) => {
+Deno.test(`Testing ${unknown_json_to_meta_json.name} function`, async (t) => {
     await t.step(
         "All these data pairs should produce same keys in dictionaries",
         async (tt) => {
@@ -104,13 +105,13 @@ Deno.test(`Testing ${MetaJSON.is_unknown_json_but_not_js.name} function`, async 
                     `In case when a and b are ${label}`, // deno-lint-ignore require-await
                     async () => {
                         if (
-                            MetaJSON.is_unknown_json_but_not_js(a) &&
-                            MetaJSON.is_unknown_json_but_not_js(b)
+                            is_unknown_json_but_not_js(a) &&
+                            is_unknown_json_but_not_js(b)
                         ) {
-                            const aResult = MetaJSON.from_unknown_json(
+                            const aResult = unknown_json_to_meta_json(
                                 a,
                             );
-                            const bResult = MetaJSON.from_unknown_json(
+                            const bResult = unknown_json_to_meta_json(
                                 b,
                             );
 
