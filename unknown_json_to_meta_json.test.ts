@@ -115,7 +115,7 @@ Deno.test(`Testing ${unknown_json_to_meta_json.name} function`, async (t) => {
                                 b,
                             );
 
-                            expect(aResult.hash).toBe(bResult.hash);
+                            expect(aResult.shape_hash).toBe(bResult.shape_hash);
                         } else {
                             expect("Should not").toBe(
                                 "here, because values are not valid json unknowns",

@@ -47,7 +47,7 @@ export type JSONCompounded = ["JSON.object", Array<unknown>] | [
  * - `type` -- represent JSON type of **leaf**
  * - `keys_as_array` -- array of the keys as they are, without possible delimiters between
  */
-export type PathValueDict<T extends JSONLeaf> = Record<
+export type PathValueDict<T extends JSONLeaf = JSONLeaf> = Record<
     string,
     {
         type: T[0];
@@ -60,11 +60,12 @@ export type PathValueDict<T extends JSONLeaf> = Record<
  * Final representation of some JSON value.
  */
 export type AnalyzedJsonMeta<
-    T extends (JSONCompounded | JSONPrimitive)[1] =
-        (JSONCompounded | JSONPrimitive)[1],
-> = {
-    origin: T;
-    type: Extract<(JSONCompounded | JSONPrimitive), T>;
-    shape_hash: string;
-} & T extends JSONLeaf[1] ? { dict?: never }
-    : { dict: PathValueDict<JSONLeaf> };
+    T extends (JSONCompounded | JSONPrimitive)[1],
+> =
+    & {
+        origin: T;
+        type: (JSONCompounded | JSONPrimitive)[0];
+        shape_hash: string;
+    }
+    & (T extends JSONLeaf[1] ? { dict?: never }
+        : { dict: PathValueDict<JSONLeaf> });

@@ -1,13 +1,19 @@
-import type { JSONCompounded, JSONPrimitive } from "./types.ts";
+import type {
+    AnalyzedJsonMeta,
+    JSONCompounded,
+    JSONLeaf,
+    JSONPrimitive,
+    PathValueDict,
+} from "./types.ts";
 
 export function unknown_json_to_meta_json<
     T extends (JSONPrimitive | JSONCompounded)[1] =
         (JSONPrimitive | JSONCompounded)[1],
 >(
     jsonValue: T,
-    path_separator = "/",
-    hash_separator_between_paths = "",
-) {
+    path_separator = " ",
+    hash_separator_between_paths = " ",
+): AnalyzedJsonMeta<any> {
     /// The type of the input value
     let type: (JSONCompounded | JSONPrimitive)[0] = "JSON.object";
 
@@ -39,9 +45,8 @@ export function unknown_json_to_meta_json<
     if (type !== "JSON.object" && type !== "JSON.array") {
         return {
             type,
-            value: jsonValue,
-            dict: {},
-            hash: type,
+            shape_hash: type,
+            origin: jsonValue as JSONPrimitive[1],
         };
     }
 
@@ -57,7 +62,7 @@ export function unknown_json_to_meta_json<
     ] as [(string | number)[], unknown][];
 
     /// The accumulator for path=value dictionary
-    const dict = {} as Record<string, unknown>;
+    const dict = {} as PathValueDict;
 
     while (
         /// So until traverser has items -- we can repeat our flatten strategy
@@ -83,11 +88,41 @@ export function unknown_json_to_meta_json<
             const is_empty_compound = !is_primitive &&
                 (Array.isArray(v) ? v : Object.keys(v)).length === 0;
             if (is_primitive || is_empty_compound) {
+                /// The type of the input value
+                let leaf_type: (JSONLeaf)[0] = "JSON.empty-object";
+
+                /// Detect actual value's type
+                /// Though this huge check will be almost repeat in next loop
+                /// here it has concrete purpose -- detect input's value
+                /// type as it is
+                if (typeof jsonValue === "object") {
+                    if (Array.isArray(jsonValue)) {
+                        leaf_type = "JSON.empty-array";
+                    } else if (jsonValue === null) {
+                        leaf_type = "JSON.null";
+                    } else {
+                        leaf_type = "JSON.empty-object";
+                    }
+                } else if (typeof jsonValue === "number") {
+                    leaf_type = "JSON.number";
+                } else if (typeof jsonValue === "string") {
+                    leaf_type = "JSON.string";
+                } else if (typeof jsonValue === "boolean") {
+                    leaf_type = "JSON.boolean";
+                } else {
+                    throw new Error(
+                        `ERROR: The <${jsonValue}> is not JSON serializable input!`,
+                    );
+                }
                 dict[
                     keys.map((k) => JSON.stringify(k)).join(
                         path_separator,
                     )
-                ] = v;
+                ] = {
+                    type: leaf_type,
+                    leaf: v as JSONLeaf[1],
+                    keys_as_array: keys,
+                };
             } else {
                 /// So in traverser appears new element for each key
                 /// With 1 only key!
@@ -99,8 +134,8 @@ export function unknown_json_to_meta_json<
 
     return {
         type,
-        value: jsonValue,
-        dict,
-        hash: Object.keys(dict).sort().join(hash_separator_between_paths),
+        origin: jsonValue,
+        dict: dict as any,
+        shape_hash: Object.keys(dict).sort().join(hash_separator_between_paths),
     };
 }
