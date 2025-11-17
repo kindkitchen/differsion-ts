@@ -6,6 +6,12 @@
     "nodeModulesDir": "auto",
     "unstable": ["fmt-component", "fmt-sql"],
     "fmt": {
-        "indentWidth": 4
+        "indentWidth": 4,
+        "exclude": ["notepad/"]
+    },
+    "imports": {
+        "@std/assert": "jsr:@std/assert@^1.0.15",
+        "@std/expect": "jsr:@std/expect@^1.0.17",
+        "@std/regexp": "jsr:@std/regexp@^1.0.1"
     }
 }
