@@ -1,7 +1,7 @@
-import { json_to_path_value_dict } from "./json_to_path_value_dict.ts";
+import { unknown_json_to_meta_json } from "./json_to_path_value_dict.ts";
 import { expect } from "@std/expect";
 
-Deno.test(`Testing ${json_to_path_value_dict.name} function`, async (t) => {
+Deno.test(`Testing ${unknown_json_to_meta_json.name} function`, async (t) => {
     await t.step(
         "All these data pairs should produce same keys in dictionaries",
         async (tt) => {
@@ -103,8 +103,8 @@ Deno.test(`Testing ${json_to_path_value_dict.name} function`, async (t) => {
                 await tt.step(
                     `In case when a and b are ${label}`, // deno-lint-ignore require-await
                     async () => {
-                        const aResult = json_to_path_value_dict(a);
-                        const bResult = json_to_path_value_dict(b);
+                        const aResult = unknown_json_to_meta_json(a);
+                        const bResult = unknown_json_to_meta_json(b);
 
                         expect(aResult.hash).toBe(bResult.hash);
                     },
