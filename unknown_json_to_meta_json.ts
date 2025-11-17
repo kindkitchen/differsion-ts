@@ -30,7 +30,9 @@ export function unknown_json_to_meta_json<
     } else if (typeof jsonValue === "boolean") {
         type = "JSON.boolean";
     } else {
-        throw new Error(`ERROR: not JSON serializable input!`);
+        throw new Error(
+            `ERROR: The <${jsonValue}> is not JSON serializable input!`,
+        );
     }
 
     /// Early return for primitives
