@@ -45,17 +45,66 @@ Deno.test(`Testing ${json_to_path_value_dict.name} function`, async (t) => {
                         },
                         "object with some keys (more deeper)",
                     ],
+                    [
+                        [
+                            {
+                                hello: {
+                                    w: {
+                                        o: {
+                                            r: "r",
+                                            l: "l",
+                                            d: "hello world",
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                hello: {
+                                    w: {
+                                        o: {
+                                            r: "r2",
+                                            l: "l2",
+                                            d: "hello world2",
+                                        },
+                                    },
+                                },
+                            },
+                            "object with some keys (more deeper)",
+                        ],
+                        [
+                            {
+                                hello: {
+                                    w: {
+                                        o: {
+                                            r: "r",
+                                            l: "l",
+                                            d: "hello world",
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                hello: {
+                                    w: {
+                                        o: {
+                                            r: "r2",
+                                            l: "l2",
+                                            d: "hello world2",
+                                        },
+                                    },
+                                },
+                            },
+                            "object with some keys (more deeper)",
+                        ],
+                        "deep arrays",
+                    ],
                 ]
             ) {
                 await tt.step(
                     `In case when a and b are ${label}`, // deno-lint-ignore require-await
                     async () => {
                         const aResult = json_to_path_value_dict(a);
-
                         const bResult = json_to_path_value_dict(b);
-
-                        console.log(aResult);
-                        console.log(bResult);
 
                         expect(aResult.hash).toBe(bResult.hash);
                     },
