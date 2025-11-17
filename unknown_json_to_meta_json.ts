@@ -59,42 +59,43 @@ export function unknown_json_to_meta_json<
     /// The accumulator for path=value dictionary
     const dict = {} as Record<string, unknown>;
 
-    do {
-        const [prev_keys, cursor] = traverser.pop()!;
-
-        /// Only interesting in object or array (js-specific check)
-        if (typeof cursor === "object" && cursor !== null) {
-            /// Iterate over array/object in agnostic way
-            /// So keys still be keys, indexes become keys
-            for (
-                const key of Array.isArray(cursor)
-                    ? Array.from({ length: cursor.length }).map((_, i) => i)
-                    : Object.keys(cursor)
-            ) {
-                /// Possibly the leaf in the json-structure (primitive value)
-                const v = (cursor as Record<string, unknown>)[key];
-                const keys = [...prev_keys, key];
-
-                if (typeof cursor !== "object" || cursor === null) {
-                    dict[
-                        keys.map((k) => JSON.stringify(k)).join(
-                            path_separator,
-                        )
-                    ] = v;
-                } else {
-                    /// So in traverser appears new element for each key
-                    /// With 1 only key!
-                    /// So this is flattening moment
-                    traverser.push([keys, v]);
-                }
-            }
-
-            continue;
-        }
-    } while (
+    while (
         /// So until traverser has items -- we can repeat our flatten strategy
         traverser.length
-    );
+    ) {
+        const [prev_keys, cursor] = traverser.pop() as [
+            string[],
+            JSONCompounded[1], /// UNSAFE: but we know that for other type is unreachable
+        ];
+
+        /// Only interesting in object or array (js-specific check)
+        /// Iterate over array/object in agnostic way
+        /// So keys still be keys, indexes become keys
+        for (
+            const key of Array.isArray(cursor)
+                ? Array.from({ length: cursor.length }).map((_, i) => i)
+                : Object.keys(cursor)
+        ) {
+            /// Possibly the leaf in the json-structure (primitive value)
+            const v = (cursor as Record<string, unknown>)[key];
+            const keys = [...prev_keys, key];
+            const is_primitive = typeof v !== "object" || v === null;
+            const is_empty_compound = !is_primitive &&
+                (Array.isArray(v) ? v : Object.keys(v)).length === 0;
+            if (is_primitive || is_empty_compound) {
+                dict[
+                    keys.map((k) => JSON.stringify(k)).join(
+                        path_separator,
+                    )
+                ] = v;
+            } else {
+                /// So in traverser appears new element for each key
+                /// With 1 only key!
+                /// So this is flattening moment
+                traverser.push([keys, v]);
+            }
+        }
+    }
 
     return {
         type,
