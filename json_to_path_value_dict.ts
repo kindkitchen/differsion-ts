@@ -1,4 +1,15 @@
-export function json_to_path_value_dict<T>(
+const util = {
+    is_empty_arr,
+    is_empty_obj,
+    is_json_arr_or_obj,
+    is_json_obj,
+};
+
+export const MetaJSON = {
+    util,
+    from_unknown_json: unknown_json_to_meta_json,
+};
+export function unknown_json_to_meta_json<T>(
     jsonValue: T,
     path_separator = "/",
     hash_separator_between_paths = "",
@@ -108,4 +119,26 @@ export function json_to_path_value_dict<T>(
     } catch {
         throw new Error(`ERROR: not JSON serializable input!`);
     }
+}
+
+function is_json_obj(
+    candidate: unknown,
+): candidate is Record<string, unknown> {
+    return typeof candidate === "object" && candidate !== null &&
+        !Array.isArray(candidate);
+}
+
+function is_json_arr_or_obj(
+    candidate: unknown,
+): candidate is Record<string, unknown> | unknown[] {
+    return typeof candidate === "object" && candidate !== null;
+}
+
+function is_empty_obj(candidate: unknown): candidate is Record<string, never> {
+    return typeof candidate === "object" && candidate !== null &&
+        !Array.isArray(candidate) && Object.keys(candidate).length === 0;
+}
+
+function is_empty_arr(candidate: unknown): candidate is [] {
+    return Array.isArray(candidate) && candidate.length === 0;
 }
