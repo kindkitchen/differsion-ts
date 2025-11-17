@@ -6,7 +6,8 @@
     "jsr:@std/expect@^1.0.17": "1.0.17",
     "jsr:@std/internal@^1.0.10": "1.0.12",
     "jsr:@std/internal@^1.0.12": "1.0.12",
-    "jsr:@std/regexp@^1.0.1": "1.0.1"
+    "jsr:@std/regexp@^1.0.1": "1.0.1",
+    "npm:safe-stable-stringify@*": "2.5.0"
   },
   "jsr": {
     "@std/assert@1.0.15": {
@@ -27,6 +28,11 @@
     },
     "@std/regexp@1.0.1": {
       "integrity": "5179d823465085c5480dafb44438466e83c424fadc61ba31f744050ecc0f596d"
+    }
+  },
+  "npm": {
+    "safe-stable-stringify@2.5.0": {
+      "integrity": "sha512-b3rppTKm9T+PsVCBEOUR46GWI7fdOs00VKZ1+9c1EWDaDMvjQc6tUwuFyIprgGgTcWoVHSKrU8H31ZHA2e0RHA=="
     }
   },
   "workspace": {
