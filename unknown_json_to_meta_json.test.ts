@@ -1,4 +1,4 @@
-import { unknown_json_to_meta_json } from "./json_to_path_value_dict.ts";
+import { unknown_json_to_meta_json } from "./unknown_json_to_meta_json.ts";
 import { expect } from "@std/expect";
 
 Deno.test(`Testing ${unknown_json_to_meta_json.name} function`, async (t) => {
