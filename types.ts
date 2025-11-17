@@ -59,7 +59,10 @@ export type PathValueDict<T extends JSONLeaf> = Record<
 /**
  * Final representation of some JSON value.
  */
-export type AnalyzedJsonMeta<T extends (JSONCompounded | JSONPrimitive)[1]> = {
+export type AnalyzedJsonMeta<
+    T extends (JSONCompounded | JSONPrimitive)[1] =
+        (JSONCompounded | JSONPrimitive)[1],
+> = {
     origin: T;
     type: Extract<(JSONCompounded | JSONPrimitive), T>;
     shape_hash: string;

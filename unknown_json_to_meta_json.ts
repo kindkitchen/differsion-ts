@@ -1,3 +1,9 @@
+import type {
+    AnalyzedJsonMeta,
+    JSONCompounded,
+    JSONPrimitive,
+} from "./types.ts";
+
 const util = {
     is_empty_arr,
     is_empty_obj,
@@ -19,13 +25,7 @@ export function unknown_json_to_meta_json<T>(
         const _jsonValue = JSON.parse(JSON.stringify(jsonValue));
 
         /// The type of the input value
-        let type = "Json::OBJECT" as
-            | "Json::null"
-            | "Json::string"
-            | "Json::number"
-            | "Json::boolean"
-            | "Json::ARRAY"
-            | "Json::OBJECT";
+        let type: (JSONCompounded | JSONPrimitive)[0] = "JSON.object";
 
         /// Detect actual value's type
         /// Though this huge check will be almost repeat in next loop
@@ -33,24 +33,24 @@ export function unknown_json_to_meta_json<T>(
         /// type as it is
         if (typeof _jsonValue === "object") {
             if (Array.isArray(_jsonValue)) {
-                type = "Json::ARRAY";
+                type = "JSON.array";
             } else if (_jsonValue === null) {
-                type = "Json::null";
+                type = "JSON.null";
             } else {
-                type = "Json::OBJECT";
+                type = "JSON.object";
             }
         } else if (typeof _jsonValue === "number") {
-            type = "Json::number";
+            type = "JSON.number";
         } else if (typeof _jsonValue === "string") {
-            type = "Json::string";
+            type = "JSON.string";
         } else if (typeof _jsonValue === "boolean") {
-            type = "Json::boolean";
+            type = "JSON.boolean";
         } else {
             throw new Error(`ERROR: not JSON serializable input!`);
         }
 
         /// Early return for primitives
-        if (type !== "Json::OBJECT" && type !== "Json::ARRAY") {
+        if (type !== "JSON.object" && type !== "JSON.array") {
             return {
                 type,
                 value: _jsonValue,
@@ -77,7 +77,7 @@ export function unknown_json_to_meta_json<T>(
             const [prev_keys, cursor] = traverser.pop()!;
 
             /// Only interesting in object or array (js-specific check)
-            if (typeof cursor === "object" && cursor !== null) {
+            if (util.is_json_arr_or_obj(cursor)) {
                 /// Iterate over array/object in agnostic way
                 /// So keys still be keys, indexes become keys
                 for (
@@ -86,7 +86,7 @@ export function unknown_json_to_meta_json<T>(
                         : Object.keys(cursor)
                 ) {
                     /// Possibly the leaf in the json-structure (primitive value)
-                    const v = cursor[key];
+                    const v = (cursor as Record<string, unknown>)[key];
                     const keys = [...prev_keys, key];
 
                     if (typeof v !== "object" || v === null) {
