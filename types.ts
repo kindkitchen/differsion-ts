@@ -47,11 +47,14 @@ export type JSONCompounded = ["JSON.object", Array<unknown>] | [
  * - `type` -- represent JSON type of **leaf**
  * - `keys_as_array` -- array of the keys as they are, without possible delimiters between
  */
-export type PathValueDict<T extends JSONLeaf> = Record<string, {
-    type: T[0];
-    leaf: T[1];
-    keys_as_array: (string | number)[];
-}>;
+export type PathValueDict<T extends JSONLeaf> = Record<
+    string,
+    {
+        type: T[0];
+        leaf: T[1];
+        keys_as_array: (string | number)[];
+    }
+>;
 
 /**
  * Final representation of some JSON value.
